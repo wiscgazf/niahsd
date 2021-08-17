@@ -41,6 +41,7 @@ module.exports = {
         path: path.join(__dirname, '../dist'),
         publicPath: '/',
         clean: true,
+        chunkFilename: '[name].js',
     },
 
     plugins: [
@@ -54,14 +55,6 @@ module.exports = {
 
     module: {
         rules: [
-            {
-                test: /\.s[ac]ss$/,
-                use: ['style-loader', 'css-loader', 'postcss-loader', 'scss-loader'],
-            },
-            {
-                test: /\.less$/,
-                use: ['style-loader', 'css-loader', 'postcss-loader', 'less-loader'],
-            },
             {
                 test: /\.(jpeg|png|jpg|gif)$/,
                 use: [

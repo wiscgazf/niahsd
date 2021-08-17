@@ -33,6 +33,14 @@ module.exports = merge(webpackConfig, {
                 include: [path.resolve(__dirname, '../src')],
                 use: ['style-loader', 'css-loader', 'postcss-loader'],
             },
+            {
+                test: /\.s[ac]ss$/,
+                use: ['style-loader', 'css-loader', 'postcss-loader', 'scss-loader'],
+            },
+            {
+                test: /\.less$/,
+                use: ['style-loader', 'css-loader', 'postcss-loader', 'less-loader'],
+            },
         ],
     },
 
