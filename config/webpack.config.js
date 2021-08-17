@@ -11,6 +11,7 @@ const fs = require('fs');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
+const Happypack = require('happypack');
 
 const files = fs.readdirSync(path.join(__dirname, '../src/pages/'));
 
@@ -51,6 +52,18 @@ module.exports = {
             patterns: [{ from: path.join(__dirname, '../src/assets/js/'), to: path.join(__dirname, '../dist/static/js/') }],
         }),
         new webpack.ProvidePlugin({}),
+        new Happypack({
+            id: 'js',
+            use: [
+                {
+                    loader: 'babel-loader',
+                    options: {
+                        presets: ['@babel/preset-env', '@babel/preset-react'],
+                        cacheDirectory: true,
+                    },
+                },
+            ],
+        }),
     ],
 
     module: {
@@ -74,7 +87,8 @@ module.exports = {
                 test: /\.(js|jsx)$/,
                 // 不要编译 node_modules 下面的代码
                 exclude: path.join(__dirname, '../node_modules'),
-                use: {
+                include: path.join(__dirname, '../src'),
+                /*use: {
                     loader: 'babel-loader',
                     options: {
                         // 当为 true 时，会启动缓存机制，
@@ -82,7 +96,8 @@ module.exports = {
                         // 这样做可以加快打包速度
                         cacheDirectory: true,
                     },
-                },
+                },*/
+                use: 'Happypack/loader?id=js', // 开启多线程打包
             },
             {
                 test: /\.js$/,
