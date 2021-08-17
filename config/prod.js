@@ -79,17 +79,19 @@ module.exports = merge(webpackConfig, {
             // 缓存组 (缓存某些代码)
             cacheGroups: {
                 // 第三方模块分片设置
-                vendor: {
-                    // 第三方模块 打包出 vendors.js 文件
-                    name: 'vendors',
+                vendors: {
+                    // 第三方模块 打包出 chunk-vendors.js 文件
+                    name: 'chunk-vendors',
                     test: /node_modules/,
-                    priority: 2,
+                    priority: -10, // 权重，权重越高，越先被抽离（这样可以做到 vendor 与 common 的分离）
+                    chunks: 'initial', // async（默认）、initial、all。async 只提取异步 chunk，initial 则只针对入口 chunk 生效，而 all 表示两种模式都开启
                 },
-                default: {
-                    // 自己的模块 导出成 commons.js 文件名
-                    name: 'commons',
+                common: {
+                    // 自己的模块 导出成 chunk-common.js 文件名
+                    name: 'chunk-common',
                     minChunks: 2,
                     priority: -20,
+                    chunks: 'initial',
                     reuseExistingChunk: true,
                 },
             },
