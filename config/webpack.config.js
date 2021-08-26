@@ -38,7 +38,7 @@ module.exports = {
     mode: 'development',
 
     output: {
-        filename: 'static/js/[chunkhash].js?[hash]',
+        filename: 'static/js/[name].[chunkhash].js?[hash]',
         path: path.join(__dirname, '../dist'),
         publicPath: '/',
         clean: true,
