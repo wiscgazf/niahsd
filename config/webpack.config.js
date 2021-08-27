@@ -13,19 +13,19 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
 const Happypack = require('happypack');
 
-const files = fs.readdirSync(path.join(__dirname, '../src/pages/'));
+const files = fs.readdirSync(path.resolve(__dirname, '../src/pages/'));
 
 const entryInfo = {}; // 入口js
 const htmlPluginData = []; // 多页html
 
 for (let i = 0; i < files.length; i++) {
-    entryInfo[files[i]] = path.join(__dirname, '../src/pages/' + files[i] + '/index.js');
+    entryInfo[files[i]] = path.resolve(__dirname, '../src/pages/' + files[i] + '/index.js');
     htmlPluginData.push(
         new HtmlWebpackPlugin({
             chunks: [files[i]],
             title: 'webpack-demo',
-            template: path.join(__dirname, '../src/pages/' + files[i] + '/index.html'),
-            favicon: path.join(__dirname, '../public/favicon.ico'),
+            template: path.resolve(__dirname, '../src/pages/' + files[i] + '/index.html'),
+            favicon: path.resolve(__dirname, '../public/favicon.ico'),
             inject: 'body', // 也可以指定字符串："body" 或 "head"（默认是body最底部，即：true）
             filename: path.join(__dirname, '../dist/') + files[i] + '.html',
         })
@@ -39,17 +39,18 @@ module.exports = {
 
     output: {
         filename: 'static/js/[name].[chunkhash].js?[hash]',
-        path: path.join(__dirname, '../dist'),
+        path: path.resolve(__dirname, '../dist'),
         publicPath: '/',
         clean: true,
         chunkFilename: '[name].js',
+        pathinfo: false,
     },
 
     plugins: [
         new webpack.ProgressPlugin(),
         ...htmlPluginData,
         new CopyPlugin({
-            patterns: [{ from: path.join(__dirname, '../src/assets/js/'), to: path.join(__dirname, '../dist/static/js/') }],
+            patterns: [{ from: path.resolve(__dirname, '../src/assets/js/'), to: path.resolve(__dirname, '../dist/static/js/') }],
         }),
         new webpack.ProvidePlugin({}),
         new Happypack({
@@ -86,8 +87,8 @@ module.exports = {
             {
                 test: /\.(js|jsx)$/,
                 // 不要编译 node_modules 下面的代码
-                exclude: path.join(__dirname, '../node_modules'),
-                include: path.join(__dirname, '../src'),
+                exclude: path.resolve(__dirname, '../node_modules'),
+                include: path.resolve(__dirname, '../src'),
                 /*use: {
                     loader: 'babel-loader',
                     options: {
@@ -104,7 +105,9 @@ module.exports = {
                 use: ['eslint-loader'],
             },
             {
-                test: /\.ts$/,
+                test: /\.(ts|tsx)$/,
+                exclude: path.resolve(__dirname, '../node_modules'),
+                include: path.resolve(__dirname, '../src'),
                 use: ['ts-loader'],
             },
             {
@@ -116,7 +119,7 @@ module.exports = {
 
     resolve: {
         alias: {
-            '@': path.join(__dirname, '../src/'),
+            '@': path.resolve(__dirname, '../src/'),
             vue$: 'vue/dist/vue.esm.js',
         },
         extensions: ['.wasm', '.mjs', '.js', '.json', '.jsx', '.ts', '.tsx'],

@@ -21,7 +21,7 @@ module.exports = merge(webpackConfig, {
     plugins: [
         new webpack.ProgressPlugin(),
         new CleanWebpackPlugin({
-            cleanOnceBeforeBuildPatterns: [path.join(__dirname, '../dist')],
+            cleanOnceBeforeBuildPatterns: [path.resolve(__dirname, '../dist')],
         }),
         new MiniCssExtractPlugin({
             filename: 'static/css/[hash].css?[hash]',

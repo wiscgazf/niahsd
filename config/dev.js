@@ -48,7 +48,7 @@ module.exports = merge(webpackConfig, {
         host: 'localhost',
         // 设置端口号
         port: '8888',
-        contentBase: path.join(__dirname, '../dist'),
+        contentBase: path.resolve(__dirname, '../dist'),
         // 这个publicPath代表静态资源的路径（打包后的静态资源路径）
         publicPath: '/',
         // 当设置成 true时，任意的 404 响应都可能需要被替代为 index.html
