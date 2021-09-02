@@ -12,28 +12,11 @@ const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
 const Happypack = require('happypack');
-
-const files = fs.readdirSync(path.resolve(__dirname, '../src/pages/'));
-
-const entryInfo = {}; // 入口js
-const htmlPluginData = []; // 多页html
-
-for (let i = 0; i < files.length; i++) {
-    entryInfo[files[i]] = path.resolve(__dirname, '../src/pages/' + files[i] + '/index.js');
-    htmlPluginData.push(
-        new HtmlWebpackPlugin({
-            chunks: [files[i]],
-            title: 'webpack-demo',
-            template: path.resolve(__dirname, '../src/pages/' + files[i] + '/index.html'),
-            favicon: path.resolve(__dirname, '../public/favicon.ico'),
-            inject: 'body', // 也可以指定字符串："body" 或 "head"（默认是body最底部，即：true）
-            filename: path.join(__dirname, '../dist/') + files[i] + '.html',
-        })
-    );
-}
+const HtmlWebpackTagsPlugin = require('html-webpack-tags-plugin');
+const { dllFiles, htmlPluginData, entryInfo } = require('./webpack.util');
 
 module.exports = {
-    entry: entryInfo,
+    entry: entryInfo(),
 
     mode: 'development',
 
@@ -48,9 +31,14 @@ module.exports = {
 
     plugins: [
         new webpack.ProgressPlugin(),
-        ...htmlPluginData,
+        ...htmlPluginData(),
+        ...dllFiles(/\.manifest.json$/),
+        new HtmlWebpackTagsPlugin({ tags: [...dllFiles(/\.js$/)], append: false }),
         new CopyPlugin({
-            patterns: [{ from: path.resolve(__dirname, '../src/assets/js/'), to: path.resolve(__dirname, '../dist/static/js/') }],
+            patterns: [
+                { from: path.resolve(__dirname, '../dll/'), to: path.resolve(__dirname, '../dist/dll/') },
+                { from: path.resolve(__dirname, '../src/assets/js/'), to: path.resolve(__dirname, '../dist/static/js/') },
+            ],
         }),
         new webpack.ProvidePlugin({}),
         new Happypack({
